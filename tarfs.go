@@ -42,6 +42,8 @@ func (f *tarFS) ReadDir(dirname string) ([]os.FileInfo, error) {
 	return content, nil
 }
 
+// Lstat implements the FileSystem Lstat method,
+// it returns fileinfo for a given path
 func (f *tarFS) Lstat(name string) (os.FileInfo, error) {
 	cursor, err := f.findNode(name)
 	if err != nil {
@@ -50,6 +52,7 @@ func (f *tarFS) Lstat(name string) (os.FileInfo, error) {
 	return cursor.FileInfo(), nil
 }
 
+// Join implements the FileSystem Join method,
 func (f *tarFS) Join(elem ...string) string {
 	return filepath.Join(elem...)
 }

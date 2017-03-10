@@ -6,8 +6,7 @@ import (
 	"os"
 )
 
-type CloseFunc func() error
-
+// Open is a helper function for opening a tar gz files as file systems
 func Open(name string) (*tarFS, CloseFunc, error) {
 	f, err := os.Open(name)
 	if err != nil {
@@ -26,3 +25,6 @@ func Open(name string) (*tarFS, CloseFunc, error) {
 
 	return New(tgz), closeFunc, nil
 }
+
+// CloseFunc is a function that closes something
+type CloseFunc func() error
