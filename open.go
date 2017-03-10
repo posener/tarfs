@@ -1,9 +1,9 @@
 package tarfs
 
 import (
-	"os"
-	"compress/gzip"
 	"archive/tar"
+	"compress/gzip"
+	"os"
 )
 
 type CloseFunc func() error

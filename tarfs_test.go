@@ -1,14 +1,14 @@
 package tarfs
 
 import (
-	"testing"
-	"sort"
 	"github.com/stretchr/testify/assert"
 	"os"
+	"sort"
+	"testing"
 )
 
 type file struct {
-	name string
+	name  string
 	isDir bool
 }
 
@@ -21,25 +21,25 @@ func TestTarFS_ReadDir(t *testing.T) {
 	}
 	defer close()
 
-	tests := []struct{
-		dir string
+	tests := []struct {
+		dir   string
 		files []file
-		err error
-	} {
+		err   error
+	}{
 		{
-			dir: "/",
+			dir:   "/",
 			files: []file{{"a", true}},
 		},
 		{
-			dir: "/a",
+			dir:   "/a",
 			files: []file{{"b", true}},
 		},
 		{
-			dir: "/a/b",
+			dir:   "/a/b",
 			files: []file{{"c", true}},
 		},
 		{
-			dir: "/a/b/c",
+			dir:   "/a/b/c",
 			files: []file{{"d", false}, {"e", false}},
 		},
 		{
@@ -82,11 +82,11 @@ func TestTarFS_Lstat(t *testing.T) {
 	}
 	defer close()
 
-	tests := []struct{
+	tests := []struct {
 		path string
 		file file
 		err  error
-	} {
+	}{
 		{
 			path: "/",
 			file: file{"/", true},
@@ -113,7 +113,7 @@ func TestTarFS_Lstat(t *testing.T) {
 		},
 		{
 			path: "/b",
-			err: os.ErrNotExist,
+			err:  os.ErrNotExist,
 		},
 	}
 
@@ -132,10 +132,10 @@ func TestTarFS_Lstat(t *testing.T) {
 func TestSplitPath(t *testing.T) {
 	t.Parallel()
 
-	tests := []struct{
-		path string
+	tests := []struct {
+		path  string
 		parts []string
-	} {
+	}{
 		{"/", []string{}},
 		{"a", []string{"a"}},
 		{"/a", []string{"a"}},
@@ -153,4 +153,3 @@ func TestSplitPath(t *testing.T) {
 		})
 	}
 }
-

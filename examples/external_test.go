@@ -1,11 +1,11 @@
 package examples
 
 import (
-	"testing"
-	"github.com/posener/tarfs"
 	"github.com/kr/fs"
+	"github.com/posener/tarfs"
 	"github.com/stretchr/testify/assert"
 	"sort"
+	"testing"
 )
 
 func TestTwoFiles(t *testing.T) {
@@ -73,4 +73,3 @@ func TestOneFile(t *testing.T) {
 
 	assert.False(t, walker.Step())
 }
-

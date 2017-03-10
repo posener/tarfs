@@ -2,9 +2,9 @@ package tarfs
 
 import (
 	"archive/tar"
-	"path/filepath"
 	"io"
 	"os"
+	"path/filepath"
 	"strings"
 )
 
@@ -83,9 +83,9 @@ func (f *tarFS) createIndex() error {
 
 func (f *tarFS) findNode(path string) (*node, error) {
 	var (
-		parts = splitPath(path)
+		parts  = splitPath(path)
 		cursor = f.index
-		ok bool
+		ok     bool
 	)
 
 	for _, part := range parts {

@@ -13,7 +13,7 @@ func newNode(h *tar.Header) *node {
 
 func newFakeDirNode(name string) *node {
 	return newNode(&tar.Header{
-		Name: name,
+		Name:     name,
 		Typeflag: tar.TypeDir,
 	})
 }
