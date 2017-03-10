@@ -1,9 +1,9 @@
 package examples
 
 import (
-	"github.com/posener/tarfs"
-	"github.com/kr/fs"
 	"fmt"
+	"github.com/kr/fs"
+	"github.com/posener/tarfs"
 )
 
 func ExampleNew() {
@@ -15,7 +15,7 @@ func ExampleNew() {
 
 	walker := fs.WalkFS("/", f)
 	for walker.Step() {
-		fmt.Println(walker.Path())  // prints all the paths in the tar file
+		fmt.Println(walker.Path()) // prints all the paths in the tar file
 	}
 	if walker.Err() != nil {
 		panic(walker.Err())
