@@ -5,6 +5,7 @@ import (
 	"io"
 	"os"
 	"path/filepath"
+	"sort"
 	"strings"
 )
 
@@ -39,6 +40,7 @@ func (f *tarFS) ReadDir(dirname string) ([]os.FileInfo, error) {
 		content[i] = h.FileInfo()
 		i++
 	}
+	sort.Slice(content, func(i, j int) bool { return content[i].Name() < content[j].Name() })
 	return content, nil
 }
 
@@ -101,11 +103,15 @@ func (f *tarFS) findNode(path string) (*node, error) {
 	return cursor, nil
 }
 
+// splitPath splits a filesystem path to directories and ending file/directory along it's path.
 func splitPath(path string) []string {
-	parts := strings.Split(strings.Trim(path, "/"), "/")
+	parts := strings.Split(strings.Trim(filepath.Clean(path), "/"), "/")
 	ret := make([]string, 0, len(parts))
 	for _, part := range parts {
-		if part != "" {
+		switch part {
+		case "", ".":
+			// skip empty or current directory
+		default:
 			ret = append(ret, part)
 		}
 	}

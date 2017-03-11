@@ -3,7 +3,6 @@ package tarfs
 import (
 	"github.com/stretchr/testify/assert"
 	"os"
-	"sort"
 	"testing"
 )
 
@@ -135,8 +134,10 @@ func TestSplitPath(t *testing.T) {
 		parts []string
 	}{
 		{"/", []string{}},
+		{"./", []string{}},
 		{"a", []string{"a"}},
 		{"/a", []string{"a"}},
+		{"./a", []string{"a"}},
 		{"/a/", []string{"a"}},
 		{"a/", []string{"a"}},
 		{"/a/b", []string{"a", "b"}},
@@ -147,7 +148,7 @@ func TestSplitPath(t *testing.T) {
 
 	for _, tt := range tests {
 		t.Run(tt.path, func(t *testing.T) {
-			assert.Equal(t, splitPath(tt.path), tt.parts)
+			assert.Equal(t, tt.parts, splitPath(tt.path))
 		})
 	}
 }
