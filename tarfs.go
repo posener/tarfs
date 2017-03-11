@@ -15,8 +15,8 @@ type tarFS struct {
 }
 
 // New returns a new tar filesystem object from a tar.Reader object.
-// This object implements the FileSystem interface in https://godoc.org/github.com/kr/fs#FileSystem.
-// It can be used by the Walker object
+// The returned object implements the FileSystem interface in https://godoc.org/github.com/kr/fs#FileSystem.
+// It can be used by the fs.WalkFS function.
 func New(reader *tar.Reader) *tarFS {
 	t := &tarFS{Reader: *reader}
 	t.createIndex()
