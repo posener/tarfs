@@ -17,6 +17,7 @@ func TestTwoFiles(t *testing.T) {
 			if err != nil {
 				t.Fatal(err)
 			}
+			defer f.Close()
 
 			walker := fs.WalkFS("/", f)
 
@@ -71,6 +72,7 @@ func TestOneFile(t *testing.T) {
 	if err != nil {
 		t.Fatal(err)
 	}
+	defer f.Close()
 
 	walker := fs.WalkFS("/", f)
 

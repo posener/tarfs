@@ -10,7 +10,7 @@ type node struct {
 }
 
 func newNode(i os.FileInfo) *node {
-	return &node{i, map[string]*node{}}
+	return &node{FileInfo: i, next: map[string]*node{}}
 }
 
 func newFakeDirNode(name string) *node {

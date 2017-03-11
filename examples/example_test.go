@@ -4,17 +4,19 @@ import (
 	"fmt"
 	"github.com/kr/fs"
 	"github.com/posener/tarfs"
+	"io/ioutil"
 )
 
-// ExampleTest shows a basic usage of the tarfs package as FileSystem
+// ExampleWalk shows a basic usage of the tarfs package as FileSystem
 // for fs.WalkFS function.
-func ExampleTest() {
-	// tarfs.Open is an helper function to open tar.gz files,
+func ExampleWalk() {
+	// use tarfs.Open to open tar.gz files,
 	// it returns an object that implements the FileSystem interface.
 	f, err := tarfs.Open("./root.tar.gz")
 	if err != nil {
 		panic(err)
 	}
+	defer f.Close()
 
 	// WalkFS accepts an object that implements the FileSystem interface,
 	// give it the tarFS object created above to walk over the files in the
@@ -33,4 +35,27 @@ func ExampleTest() {
 	// /a/b/c
 	// /a/b/c/d
 	// /a/b/c/e
+}
+
+func ExampleRead() {
+
+	// use tarfs.Open to open tar.gz files,
+	f, err := tarfs.Open("./root.tar.gz")
+	if err != nil {
+		panic(err)
+	}
+	defer f.Close()
+
+	// open a file inside the file
+	f.Open("a/b/c/d")
+
+	// read the file content
+	buf, err := ioutil.ReadAll(f)
+	if err != nil {
+		panic(err)
+	}
+
+	fmt.Println(string(buf))
+
+	// Output: hello
 }
