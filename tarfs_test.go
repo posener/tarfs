@@ -6,19 +6,13 @@ import (
 	"testing"
 )
 
-type file struct {
-	name  string
-	isDir bool
-}
-
 func TestTarFS_ReadDir(t *testing.T) {
 	t.Parallel()
 
-	f, close, err := Open("./examples/root.tar.gz")
+	f, err := Open("./examples/root.tar.gz")
 	if err != nil {
 		t.Fatal(err)
 	}
-	defer close()
 
 	tests := []struct {
 		dir   string
@@ -27,19 +21,19 @@ func TestTarFS_ReadDir(t *testing.T) {
 	}{
 		{
 			dir:   "/",
-			files: []file{{"a", true}},
+			files: []file{{name: "a", isDir: true}},
 		},
 		{
 			dir:   "/a",
-			files: []file{{"b", true}},
+			files: []file{{name: "b", isDir: true}},
 		},
 		{
 			dir:   "/a/b",
-			files: []file{{"c", true}},
+			files: []file{{name: "c", isDir: true}},
 		},
 		{
 			dir:   "/a/b/c",
-			files: []file{{"d", false}, {"e", false}},
+			files: []file{{name: "d", isDir: false}, {name: "e", isDir: false}},
 		},
 		{
 			dir: "/a/b/c/d",
@@ -73,11 +67,10 @@ func TestTarFS_ReadDir(t *testing.T) {
 func TestTarFS_Lstat(t *testing.T) {
 	t.Parallel()
 
-	f, close, err := Open("./examples/root.tar.gz")
+	f, err := Open("./examples/root.tar.gz")
 	if err != nil {
 		t.Fatal(err)
 	}
-	defer close()
 
 	tests := []struct {
 		path string
@@ -86,27 +79,27 @@ func TestTarFS_Lstat(t *testing.T) {
 	}{
 		{
 			path: "/",
-			file: file{"/", true},
+			file: file{name: "/", isDir: true},
 		},
 		{
 			path: "/a",
-			file: file{"a", true},
+			file: file{name: "a", isDir: true},
 		},
 		{
 			path: "/a/b",
-			file: file{"b", true},
+			file: file{name: "b", isDir: true},
 		},
 		{
 			path: "/a/b/c",
-			file: file{"c", true},
+			file: file{name: "c", isDir: true},
 		},
 		{
 			path: "/a/b/c/d",
-			file: file{"d", false},
+			file: file{name: "d", isDir: false},
 		},
 		{
 			path: "/a/b/c/e",
-			file: file{"e", false},
+			file: file{name: "e", isDir: false},
 		},
 		{
 			path: "/b",

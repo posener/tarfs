@@ -13,11 +13,10 @@ func TestTwoFiles(t *testing.T) {
 
 	for _, tarFile := range []string{"./root.tar.gz", "./two-files.tar.gz", "./root.tar"} {
 		t.Run(tarFile, func(t *testing.T) {
-			f, close, err := tarfs.Open(tarFile)
+			f, err := tarfs.Open(tarFile)
 			if err != nil {
 				t.Fatal(err)
 			}
-			defer close()
 
 			walker := fs.WalkFS("/", f)
 
@@ -68,11 +67,10 @@ func TestTwoFiles(t *testing.T) {
 func TestOneFile(t *testing.T) {
 	t.Parallel()
 
-	f, close, err := tarfs.Open("./one-file.tar.gz")
+	f, err := tarfs.Open("./one-file.tar.gz")
 	if err != nil {
 		t.Fatal(err)
 	}
-	defer close()
 
 	walker := fs.WalkFS("/", f)
 
