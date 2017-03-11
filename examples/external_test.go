@@ -42,6 +42,25 @@ func TestTwoFiles(t *testing.T) {
 			assert.Equal(t, []string{"/a/b/c/d", "/a/b/c/e"}, files)
 
 			assert.False(t, walker.Step())
+
+			// test walking not from root
+			walker = fs.WalkFS("/a/b", f)
+
+			assert.True(t, walker.Step())
+			assert.Equal(t, "/a/b", walker.Path())
+
+			assert.True(t, walker.Step())
+			assert.Equal(t, "/a/b/c", walker.Path())
+
+			files = []string{}
+			assert.True(t, walker.Step())
+			files = append(files, walker.Path())
+			assert.True(t, walker.Step())
+			files = append(files, walker.Path())
+			sort.Slice(files, func(i, j int) bool { return files[i] < files[j] })
+			assert.Equal(t, []string{"/a/b/c/d", "/a/b/c/e"}, files)
+
+			assert.False(t, walker.Step())
 		})
 	}
 }
