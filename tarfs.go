@@ -10,16 +10,15 @@ import (
 )
 
 type tarFS struct {
-	tar.Reader
 	index *node
 }
 
 // New returns a new tar filesystem object from a tar.Reader object.
 // The returned object implements the FileSystem interface in https://godoc.org/github.com/kr/fs#FileSystem.
 // It can be used by the fs.WalkFS function.
-func New(reader *tar.Reader) *tarFS {
-	t := &tarFS{Reader: *reader}
-	t.createIndex()
+func New(r *tar.Reader) *tarFS {
+	t := &tarFS{}
+	t.createIndex(r)
 	return t
 }
 
@@ -30,14 +29,14 @@ func (f *tarFS) ReadDir(dirname string) ([]os.FileInfo, error) {
 	if err != nil {
 		return nil, err
 	}
-	if !cursor.FileInfo().IsDir() {
+	if !cursor.IsDir() {
 		return nil, os.ErrInvalid
 	}
 
 	content := make([]os.FileInfo, len(cursor.next))
 	i := 0
-	for _, h := range cursor.next {
-		content[i] = h.FileInfo()
+	for _, f := range cursor.next {
+		content[i] = f
 		i++
 	}
 	sort.Slice(content, func(i, j int) bool { return content[i].Name() < content[j].Name() })
@@ -51,7 +50,7 @@ func (f *tarFS) Lstat(name string) (os.FileInfo, error) {
 	if err != nil {
 		return nil, err
 	}
-	return cursor.FileInfo(), nil
+	return cursor, nil
 }
 
 // Join implements the FileSystem Join method,
@@ -59,10 +58,10 @@ func (f *tarFS) Join(elem ...string) string {
 	return filepath.Join(elem...)
 }
 
-func (f *tarFS) createIndex() error {
+func (f *tarFS) createIndex(r *tar.Reader) error {
 	f.index = newFakeDirNode("/")
 	for {
-		h, err := f.Next()
+		h, err := r.Next()
 		if err == io.EOF {
 			break
 		}
@@ -81,7 +80,7 @@ func (f *tarFS) createIndex() error {
 			cursor = cursor.next[part]
 		}
 
-		cursor.next[parts[len(parts)-1]] = newNode(h)
+		cursor.next[parts[len(parts)-1]] = newNode(h.FileInfo())
 	}
 	return nil
 }

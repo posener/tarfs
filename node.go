@@ -1,19 +1,27 @@
 package tarfs
 
-import "archive/tar"
+import (
+	"os"
+)
 
 type node struct {
-	tar.Header
+	os.FileInfo
 	next map[string]*node
 }
 
-func newNode(h *tar.Header) *node {
-	return &node{*h, map[string]*node{}}
+func newNode(i os.FileInfo) *node {
+	return &node{i, map[string]*node{}}
 }
 
 func newFakeDirNode(name string) *node {
-	return newNode(&tar.Header{
-		Name:     name,
-		Typeflag: tar.TypeDir,
-	})
+	return newNode(&file{name: name, isDir: true})
 }
+
+type file struct {
+	name  string
+	isDir bool
+	os.FileInfo
+}
+
+func (f *file) Name() string { return f.name }
+func (f *file) IsDir() bool  { return f.isDir }
