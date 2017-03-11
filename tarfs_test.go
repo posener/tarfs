@@ -3,7 +3,6 @@ package tarfs
 import (
 	"github.com/stretchr/testify/assert"
 	"os"
-	"sort"
 	"testing"
 )
 
@@ -61,8 +60,6 @@ func TestTarFS_ReadDir(t *testing.T) {
 			files, err := f.ReadDir(tt.dir)
 			assert.Equal(t, err, tt.err)
 			if tt.err == nil {
-				sort.Slice(files, func(i, j int) bool { return files[i].Name() < files[j].Name() })
-				sort.Slice(tt.files, func(i, j int) bool { return tt.files[i].name < tt.files[j].name })
 				assert.Equal(t, len(files), len(tt.files))
 				for i := range files {
 					assert.Equal(t, files[i].Name(), tt.files[i].name)
@@ -137,8 +134,10 @@ func TestSplitPath(t *testing.T) {
 		parts []string
 	}{
 		{"/", []string{}},
+		{"./", []string{}},
 		{"a", []string{"a"}},
 		{"/a", []string{"a"}},
+		{"./a", []string{"a"}},
 		{"/a/", []string{"a"}},
 		{"a/", []string{"a"}},
 		{"/a/b", []string{"a", "b"}},
@@ -149,7 +148,7 @@ func TestSplitPath(t *testing.T) {
 
 	for _, tt := range tests {
 		t.Run(tt.path, func(t *testing.T) {
-			assert.Equal(t, splitPath(tt.path), tt.parts)
+			assert.Equal(t, tt.parts, splitPath(tt.path))
 		})
 	}
 }
