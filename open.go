@@ -7,16 +7,16 @@ import (
 )
 
 // Open is a helper function for opening a tar gz files as file systems
-func Open(name string) (tfs *tarFS, err error) {
+func Open(name string) (*tarFS, error) {
 	f, err := os.Open(name)
 	if err != nil {
-		return
+		return nil, err
 	}
 	defer f.Close()
 
 	var t *tar.Reader
 
-	if z, zipErr := gzip.NewReader(f); zipErr == nil {
+	if z, err := gzip.NewReader(f); err == nil {
 		// that archive is zipped
 		defer z.Close()
 		t = tar.NewReader(z)
@@ -26,6 +26,5 @@ func Open(name string) (tfs *tarFS, err error) {
 		t = tar.NewReader(f)
 	}
 
-	tfs = New(t)
-	return
+	return New(t), nil
 }
