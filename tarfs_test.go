@@ -61,8 +61,6 @@ func TestTarFS_ReadDir(t *testing.T) {
 			files, err := f.ReadDir(tt.dir)
 			assert.Equal(t, err, tt.err)
 			if tt.err == nil {
-				sort.Slice(files, func(i, j int) bool { return files[i].Name() < files[j].Name() })
-				sort.Slice(tt.files, func(i, j int) bool { return tt.files[i].name < tt.files[j].name })
 				assert.Equal(t, len(files), len(tt.files))
 				for i := range files {
 					assert.Equal(t, files[i].Name(), tt.files[i].name)
