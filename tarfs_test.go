@@ -9,11 +9,10 @@ import (
 func TestTarFS_ReadDir(t *testing.T) {
 	t.Parallel()
 
-	f, close, err := Open("./examples/root.tar.gz")
+	f, err := Open("./examples/root.tar.gz")
 	if err != nil {
 		t.Fatal(err)
 	}
-	defer close()
 
 	tests := []struct {
 		dir   string
@@ -68,11 +67,10 @@ func TestTarFS_ReadDir(t *testing.T) {
 func TestTarFS_Lstat(t *testing.T) {
 	t.Parallel()
 
-	f, close, err := Open("./examples/root.tar.gz")
+	f, err := Open("./examples/root.tar.gz")
 	if err != nil {
 		t.Fatal(err)
 	}
-	defer close()
 
 	tests := []struct {
 		path string

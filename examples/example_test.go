@@ -10,13 +10,11 @@ import (
 // for fs.WalkFS function.
 func ExampleTest() {
 	// tarfs.Open is an helper function to open tar.gz files,
-	// it returns an object that implements the FileSystem interface
-	// and a function to close the opened file.
-	f, close, err := tarfs.Open("./root.tar.gz")
+	// it returns an object that implements the FileSystem interface.
+	f, err := tarfs.Open("./root.tar.gz")
 	if err != nil {
 		panic(err)
 	}
-	defer close()
 
 	// WalkFS accepts an object that implements the FileSystem interface,
 	// give it the tarFS object created above to walk over the files in the
