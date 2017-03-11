@@ -13,7 +13,7 @@ import (
 // New returns a new tar FileSystem object from path to a tar archive.
 // The returned object implements the FileSystem interface in https://godoc.org/github.com/kr/fs#FileSystem.
 // It can be used by the fs.WalkFS function.
-// It is also enable of reading of a specific file
+// It also enables reading of a specific file.
 func New(name string) (*FileSystem, error) {
 	var (
 		f   = &FileSystem{}
@@ -46,7 +46,10 @@ func (f *FileSystem) Close() error {
 	return f.f.Close()
 }
 
-// New opens a file inside the FileSystem
+// New opens a file inside the FileSystem.
+// Time complexity is O of number of files in the tar archive.
+// After using the `Open` method, it is possible to read the file with the `Read` method.
+// Errors will be returned in case the file does not exists or it is a directory.
 func (f *FileSystem) Open(path string) error {
 	path = filepath.Clean(path)
 	f.reset()
@@ -72,7 +75,7 @@ func (f *FileSystem) Open(path string) error {
 	return os.ErrNotExist
 }
 
-// ReadDir implements the FileSysyem ReadDir method,
+// ReadDir implements the FileSystem ReadDir method,
 // It returns a list of fileinfos in a given path
 func (f *FileSystem) ReadDir(dirname string) ([]os.FileInfo, error) {
 	cursor, err := f.findNode(dirname)

@@ -5,7 +5,10 @@
 [![GoDoc](https://godoc.org/github.com/posener/tarfs?status.svg)](http://godoc.org/github.com/posener/tarfs)
 [![Go Report Card](https://goreportcard.com/badge/github.com/posener/tarfs)](https://goreportcard.com/report/github.com/posener/tarfs)
 
-An implementation of the [`FileSystem` interface](https://godoc.org/github.com/kr/fs#FileSystem) for tar files.
+A wrapper around [`tar.Reader`](https://golang.org/pkg/archive/tar/#Reader).
+
+  * Implements the [`FileSystem` interface](https://godoc.org/github.com/kr/fs#FileSystem) for tar files.
+  * Adds an `Open` method, that enables reading of file according to its' path.
 
 ## Get
 
