@@ -43,6 +43,11 @@ func (f *File) Close() error {
 func (f *File) Open(path string) error {
 	path = cleanPath(path)
 
+	// cant open "/" for reading
+	if path == "" {
+		return os.ErrInvalid
+	}
+
 	// reset, we need to iterate the tar index from the beginning
 	f.reset()
 
