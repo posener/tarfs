@@ -6,6 +6,7 @@ import (
 	"io"
 	"os"
 	"path/filepath"
+	"strings"
 )
 
 type File struct {
@@ -40,7 +41,7 @@ func (f *File) Close() error {
 // is a nil, the next Read call will read the requested file inside
 // the tar file.
 func (f *File) Open(path string) error {
-	path = filepath.Clean(path)
+	path = cleanPath(path)
 
 	// reset, we need to iterate the tar index from the beginning
 	f.reset()
@@ -53,7 +54,7 @@ func (f *File) Open(path string) error {
 		if err != nil {
 			return err
 		}
-		if filepath.Clean(h.Name) == path {
+		if cleanPath(h.Name) == path {
 
 			// if request path is a directory, we can't open it for reading
 			if h.FileInfo().IsDir() {
@@ -82,4 +83,8 @@ func (f *File) reset() {
 		f.f.Seek(0, io.SeekStart)
 		f.Reader = tar.NewReader(f.f)
 	}
+}
+
+func cleanPath(path string) string {
+	return strings.Trim(filepath.Clean(path), "/")
 }
