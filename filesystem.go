@@ -2,7 +2,6 @@ package tarfs
 
 import (
 	"archive/tar"
-	"compress/gzip"
 	"io"
 	"os"
 	"path/filepath"
@@ -10,69 +9,28 @@ import (
 	"strings"
 )
 
-// New returns a new tar FileSystem object from path to a tar archive.
+// NewFile returns a new tar FileSystem object from path to a tar archive.
 // The returned object implements the FileSystem interface in https://godoc.org/github.com/kr/fs#FileSystem.
 // It can be used by the fs.WalkFS function.
-// It also enables reading of a specific file.
-func New(name string) (*FileSystem, error) {
-	var (
-		f   = &FileSystem{}
-		err error
-	)
+// It also enables reading of a specific fakeFile.
+func NewFS(path string) (*FileSystem, error) {
+	fs := &FileSystem{}
 
-	f.f, err = os.Open(name)
+	f, err := NewFile(path)
 	if err != nil {
 		return nil, err
 	}
+	defer f.Close()
 
-	f.createIndex()
-	return f, nil
+	fs.createIndex(f.Reader)
+
+	return fs, nil
 }
 
 // FileSystem is a struct that describes a tar filesystem.
-// It should be created with the New function.
+// It should be created with the NewFile function.
 type FileSystem struct {
-	tar.Reader
-	f     *os.File
-	z     *gzip.Reader
 	index *node
-}
-
-// Close closes FileSystem
-func (f *FileSystem) Close() error {
-	if f.z != nil {
-		f.z.Close()
-	}
-	return f.f.Close()
-}
-
-// New opens a file inside the FileSystem.
-// Time complexity is O of number of files in the tar archive.
-// After using the `Open` method, it is possible to read the file with the `Read` method.
-// Errors will be returned in case the file does not exists or it is a directory.
-func (f *FileSystem) Open(path string) error {
-	path = filepath.Clean(path)
-	f.reset()
-	for {
-		h, err := f.Next()
-		if err == io.EOF {
-			break
-		}
-		if err != nil {
-			return err
-		}
-		if filepath.Clean(h.Name) == path {
-
-			// if request path is a directory, we can't open it for reading
-			if h.FileInfo().IsDir() {
-				return os.ErrInvalid
-			}
-
-			// pointing to the right file, stopping the search
-			return nil
-		}
-	}
-	return os.ErrNotExist
 }
 
 // ReadDir implements the FileSystem ReadDir method,
@@ -111,12 +69,11 @@ func (f *FileSystem) Join(elem ...string) string {
 	return filepath.Join(elem...)
 }
 
-func (f *FileSystem) createIndex() error {
+func (f *FileSystem) createIndex(t *tar.Reader) error {
 	f.index = newFakeDirNode("/")
-	f.reset()
 
 	for {
-		h, err := f.Next()
+		h, err := t.Next()
 		if err == io.EOF {
 			break
 		}
@@ -157,25 +114,7 @@ func (f *FileSystem) findNode(path string) (*node, error) {
 	return cursor, nil
 }
 
-func (f *FileSystem) reset() {
-	var err error
-
-	if f.z != nil {
-		f.z.Close()
-	}
-
-	f.f.Seek(0, os.SEEK_SET)
-	if f.z, err = gzip.NewReader(f.f); err == nil {
-		f.Reader = *tar.NewReader(f.z)
-	} else {
-		// assuming that the archive is not gzipped
-		f.z = nil
-		f.f.Seek(0, os.SEEK_SET)
-		f.Reader = *tar.NewReader(f.f)
-	}
-}
-
-// splitPath splits a FileSystem path to directories and ending file/directory along it's path.
+// splitPath splits a FileSystem path to directories and ending fakeFile/directory along it's path.
 func splitPath(path string) []string {
 	parts := strings.Split(strings.Trim(filepath.Clean(path), "/"), "/")
 	ret := make([]string, 0, len(parts))

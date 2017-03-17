@@ -14,14 +14,14 @@ func newNode(i os.FileInfo) *node {
 }
 
 func newFakeDirNode(name string) *node {
-	return newNode(&file{name: name, isDir: true})
+	return newNode(&fakeFile{name: name, isDir: true})
 }
 
-type file struct {
+type fakeFile struct {
 	name  string
 	isDir bool
 	os.FileInfo
 }
 
-func (f *file) Name() string { return f.name }
-func (f *file) IsDir() bool  { return f.isDir }
+func (f *fakeFile) Name() string { return f.name }
+func (f *fakeFile) IsDir() bool  { return f.isDir }

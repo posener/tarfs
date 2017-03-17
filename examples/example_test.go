@@ -2,21 +2,22 @@ package examples
 
 import (
 	"fmt"
-	"github.com/kr/fs"
-	"github.com/posener/tarfs"
 	"io/ioutil"
+
+	"github.com/kr/fs"
+
+	"github.com/posener/tarfs"
 )
 
 // ExampleWalk shows a basic usage of the tarfs package as FileSystem
 // for fs.WalkFS function.
 func ExampleWalk() {
-	// use tarfs.New to open tar.gz files,
+	// use tarfs.NewFile to open tar.gz files,
 	// it returns an object that implements the FileSystem interface.
-	f, err := tarfs.New("./root.tar.gz")
+	f, err := tarfs.NewFS("./root.tar.gz")
 	if err != nil {
 		panic(err)
 	}
-	defer f.Close()
 
 	// WalkFS accepts an object that implements the FileSystem interface,
 	// give it the tarFS object created above to walk over the files in the
@@ -39,8 +40,8 @@ func ExampleWalk() {
 
 func ExampleRead() {
 
-	// use tarfs.New to open tar.gz files,
-	f, err := tarfs.New("./root.tar.gz")
+	// use tarfs.NewFile to open tar.gz files,
+	f, err := tarfs.NewFile("./root.tar.gz")
 	if err != nil {
 		panic(err)
 	}
