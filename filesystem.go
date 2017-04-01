@@ -9,7 +9,7 @@ import (
 	"strings"
 )
 
-// NewFile returns a new tar FileSystem object from path to a tar archive.
+// NewFS returns a new tar FileSystem object from path to a tar archive.
 // The returned object implements the FileSystem interface in https://godoc.org/github.com/kr/fs#FileSystem.
 // It can be used by the fs.WalkFS function.
 // It also enables reading of a specific fakeFile.

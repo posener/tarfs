@@ -9,12 +9,15 @@ import (
 	"strings"
 )
 
+// File is a struct that represent a Reader of a tar file
+// it is created by the NewFile function.
 type File struct {
 	*tar.Reader
 	f *os.File
 	z *gzip.Reader
 }
 
+//NewFile returns a new File object, given a path to a tar file.
 func NewFile(path string) (*File, error) {
 	f := &File{}
 	var err error
@@ -30,6 +33,7 @@ func NewFile(path string) (*File, error) {
 	return f, nil
 }
 
+// Close closes the file
 func (f *File) Close() error {
 	if f.z != nil {
 		f.z.Close()
