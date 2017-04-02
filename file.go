@@ -17,7 +17,7 @@ type File struct {
 	z *gzip.Reader
 }
 
-//NewFile returns a new File object, given a path to a tar file.
+// NewFile returns a new File object, given a path to a tar file.
 func NewFile(path string) (*File, error) {
 	f := &File{}
 	var err error
